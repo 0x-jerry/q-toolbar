@@ -1,20 +1,20 @@
 <script lang="ts" setup>
-import { createPromise, Optional } from '@0x-jerry/utils'
+import { createPromise, type Optional } from '@0x-jerry/utils'
 import { useLoading } from '@0x-jerry/vue-kit'
-import { fetch as backendFetch, ClientOptions } from '@tauri-apps/plugin-http'
+import { fetch as backendFetch, type ClientOptions } from '@tauri-apps/plugin-http'
 import { watchImmediate } from '@vueuse/core'
 import OpenAI from 'openai'
 import { ChatCompletionStream } from 'openai/lib/ChatCompletionStream.mjs'
-import { ChatCompletionMessageParam } from 'openai/resources/index.mjs'
+import type { ChatCompletionMessageParam } from 'openai/resources/index.mjs'
 import { computed, reactive, ref } from 'vue'
 import { useAppBasicConfig } from '../composables'
-import { chatHistoryTable, IChatHistoryModel } from '../database/chatHistory'
+import { chatHistoryTable, type IChatHistoryModel } from '../database/chatHistory'
 import {
   chatHistoryMsgTable,
-  IChatHistoryMsgItem,
-  IChatHistoryMsgModel,
+  type IChatHistoryMsgItem,
+  type IChatHistoryMsgModel,
 } from '../database/chatHistoryMsg'
-import { IEndpointConfigItem } from '../database/endpointConfig'
+import type { IEndpointConfigItem } from '../database/endpointConfig'
 import { ChatRole } from '../logic/chat'
 import ChatRoot from './Chat/ChatRoot.vue'
 

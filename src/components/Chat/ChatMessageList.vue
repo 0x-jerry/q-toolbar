@@ -2,7 +2,7 @@
 import { MessagePlugin } from 'tdesign-vue-next'
 import { useI18n } from '../../composables'
 import type { IChatHistoryMsgItem } from '../../database/chatHistoryMsg'
-import ChatMessage, { ChatMessageEmits } from './ChatMessage.vue'
+import ChatMessage, { type ChatMessageEmits } from './ChatMessage.vue'
 
 interface ChatMessageListProps {
   messages: IChatHistoryMsgItem[]

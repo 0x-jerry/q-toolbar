@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Button, Textarea, TextareaValue } from 'tdesign-vue-next'
+import { Button, Textarea, type TextareaValue } from 'tdesign-vue-next'
 import { computed, ref } from 'vue'
 import { useI18n } from '../../composables'
 import Icon from '../Icon.vue'
