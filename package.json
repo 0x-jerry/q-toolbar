@@ -37,7 +37,7 @@
     "vue-router": "^5.0.4"
   },
   "devDependencies": {
-    "@0x-jerry/x-release": "^3.0.1",
+    "@0x-jerry/x-release": "^3.0.5",
     "@iconify-json/carbon": "^1.2.20",
     "@tauri-apps/cli": "^2.10.1",
     "@types/katex": "^0.16.8",

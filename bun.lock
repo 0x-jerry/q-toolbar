@@ -31,7 +31,7 @@
         "vue-router": "^5.0.4",
       },
       "devDependencies": {
-        "@0x-jerry/x-release": "^3.0.1",
+        "@0x-jerry/x-release": "^3.0.5",
         "@iconify-json/carbon": "^1.2.20",
         "@tauri-apps/cli": "^2.10.1",
         "@types/katex": "^0.16.8",
@@ -57,7 +57,7 @@
 
     "@0x-jerry/vue-kit": ["@0x-jerry/vue-kit@2.3.1", "", { "dependencies": { "@vueuse/core": "^12.5.0", "type-fest": "^4.33.0", "vue": "^3.5.13", "vue-component-type-helpers": "^2.2.0" } }, "sha512-FMMSyONu1Arzs5huNZi5IbvGJsEITUuxerOCCiqCKt0Zyxa6xcVuzWhbCPLnhog/DI/r1DAh9MjeKmGPhvBJGg=="],
 
-    "@0x-jerry/x-release": ["@0x-jerry/x-release@3.0.1", "", { "dependencies": { "@0x-jerry/load-pkg": "^0.1.5", "@0x-jerry/utils": "^5.0.0", "cac": "^6.7.14", "debug": "^4.4.3", "picocolors": "^1.1.1", "prompts": "^2.4.2", "semver": "^7.7.3", "unconfig": "^7.4.1" }, "bin": { "x-release": "dist/cli.js" } }, "sha512-vuhFdVuhZqSPcBxi4i9YuQT7IJPk0Ic8IH4HTcJWIOQshDE635pLBnwccidFsjw5K/J8XCEm2my0ovvn1thuag=="],
+    "@0x-jerry/x-release": ["@0x-jerry/x-release@3.0.5", "", { "dependencies": { "@0x-jerry/load-pkg": "^0.1.5", "@0x-jerry/utils": "^6.4.2", "cac": "^7.0.0", "debug": "^4.4.3", "picocolors": "^1.1.1", "prompts": "^2.4.2", "semver": "^7.7.4", "unconfig": "^7.5.0" }, "bin": { "x-release": "dist/cli.mjs" } }, "sha512-vYkx7lPgsOsNsYf6idYS4wkhQcASTJcPtpdWNLqScQzM0dj6cw5udOvuwXOhMBAYhlZezsgpskEMaylbY1E92w=="],
 
     "@antfu/install-pkg": ["@antfu/install-pkg@1.1.0", "", { "dependencies": { "package-manager-detector": "^1.3.0", "tinyexec": "^1.0.1" } }, "sha512-MGQsmw10ZyI+EJo45CdSER4zEb+p31LpDAFp2Z3gkSd1yqVZGi0Ebx++YTEMonJy4oChEMLsxZ64j8FH6sSqtQ=="],
 
@@ -459,7 +459,7 @@
 
     "birpc": ["birpc@2.9.0", "", {}, "sha512-KrayHS5pBi69Xi9JmvoqrIgYGDkD6mcSe/i6YKi3w5kekCLzrX4+nawcXqrj2tIp50Kw/mT/s3p+GVK0A0sKxw=="],
 
-    "cac": ["cac@6.7.14", "", {}, "sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ=="],
+    "cac": ["cac@7.0.0", "", {}, "sha512-tixWYgm5ZoOD+3g6UTea91eow5z6AAHaho3g0V9CNSNb45gM8SmflpAc+GRd1InC4AqN/07Unrgp56Y94N9hJQ=="],
 
     "chart.js": ["chart.js@4.5.1", "", { "dependencies": { "@kurkle/color": "^0.3.0" } }, "sha512-GIjfiT9dbmHRiYi6Nl2yFCq7kkwdkp1W/lp2J99rX0yo9tgJGn3lKQATztIjb5tVtevcBtIdICNWqlq5+E8/Pw=="],
 
@@ -792,10 +792,6 @@
     "yaml": ["yaml@2.8.3", "", { "bin": { "yaml": "bin.mjs" } }, "sha512-AvbaCLOO2Otw/lW5bmh9d/WEdcDFdQp2Z2ZUH3pX9U2ihyUY0nvLv7J6TrWowklRGPYbB/IuIMfYgxaCPg5Bpg=="],
 
     "@0x-jerry/vue-kit/@vueuse/core": ["@vueuse/core@12.8.2", "", { "dependencies": { "@types/web-bluetooth": "^0.0.21", "@vueuse/metadata": "12.8.2", "@vueuse/shared": "12.8.2", "vue": "^3.5.13" } }, "sha512-HbvCmZdzAu3VGi/pWYm5Ut+Kd9mn1ZHnn4L5G8kOQTPs/IwIAmJoBrmYk2ckLArgMXZj0AW3n5CAejLUO+PhdQ=="],
-
-    "@0x-jerry/x-release/@0x-jerry/utils": ["@0x-jerry/utils@5.0.0", "", { "dependencies": { "fflate": "^0.8.2", "nanoid": "^5.1.2", "picocolors": "^1.1.1" } }, "sha512-F3TnKTJrCRCKe9FG0eWEVlgYDFusC6p0hePjyR7mKAgGj61/4lScng7Dj/ss2Fo2zJvH8qWv2G7fSvW45n7fQQ=="],
-
-    "@unocss/cli/cac": ["cac@7.0.0", "", {}, "sha512-tixWYgm5ZoOD+3g6UTea91eow5z6AAHaho3g0V9CNSNb45gM8SmflpAc+GRd1InC4AqN/07Unrgp56Y94N9hJQ=="],
 
     "@vue/compiler-core/entities": ["entities@7.0.1", "", {}, "sha512-TWrgLOFUQTH994YUyl1yT4uyavY5nNB5muff+RtWaqNVCAK408b5ZnnbNAUEWLTCpum9w6arT70i1XdQ4UeOPA=="],
 
