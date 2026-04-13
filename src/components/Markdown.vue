@@ -35,3 +35,15 @@ const html = computed(() => {
   --bgColor-default: transparent;
 }
 </style>
+
+
+<style>
+.katex-html {
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  &::-webkit-scrollbar {
+    height: 2px;
+  }
+}
+</style>
