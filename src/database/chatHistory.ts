@@ -15,6 +15,31 @@ class ChatHistoryTable extends BaseModelManager<IChatHistoryModel> {
   TABLE_NAME = 'chat_history'
   COLUMN_NAMES = ['name']
 
+  async searchPage(
+    opt: {
+      size?: number
+      current: number
+      desc?: boolean
+      keyword?: string
+    },
+  ) {
+    const { size = 10, current, desc, keyword = '' } = opt
+    const trimmedKeyword = keyword.trim()
+
+    if (!trimmedKeyword) {
+      return this.page({ size, current, desc })
+    }
+
+    const order = desc ? 'desc' : 'asc'
+    const sql = `select * from ${this.TABLE_NAME} where name like $1 order by id ${order} limit ${size} offset ${size * current}`
+
+    const resp = await this.db.select<IChatHistoryModel[]>(sql, [
+      `%${trimmedKeyword}%`,
+    ])
+
+    return resp
+  }
+
   async getAllById(id: number) {
     const result = await this.getById(id)
 

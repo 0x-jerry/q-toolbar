@@ -2,7 +2,7 @@
 import { sleep } from '@0x-jerry/utils'
 import { useAsyncData } from '@0x-jerry/vue-kit'
 import { getCurrentWindow } from '@tauri-apps/api/window'
-import { useLocalStorage } from '@vueuse/core'
+import { useEventListener, useLocalStorage } from '@vueuse/core'
 import { reactive, ref, useTemplateRef } from 'vue'
 import ChatWithHistory from '../components/ChatWithHistory.vue'
 import { useWinEventListener } from '../composables/useWinEventListener'
@@ -52,11 +52,23 @@ useWinEventListener(WindowEventName.ChatHide, async () => {
     return
   }
 
+  await closeWindow()
+})
+
+useEventListener(window, 'keydown', async (evt) => {
+  if (evt.key !== 'Escape') {
+    return
+  }
+
+  await closeWindow()
+})
+
+async function closeWindow() {
   await win.hide()
 
   chatRef.value?.abortStream()
   chatHistory.value = undefined
-})
+}
 
 async function fetchInitializedData() {
   if (!payload.value.promptId) {

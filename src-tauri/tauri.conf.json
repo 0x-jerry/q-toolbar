@@ -4,9 +4,9 @@
   "version": "1.4.0",
   "identifier": "q-toolbar.0x-jerry.com",
   "build": {
-    "beforeDevCommand": "pnpm ui:dev",
+    "beforeDevCommand": "bun run ui:dev",
     "devUrl": "http://localhost:8990",
-    "beforeBuildCommand": "pnpm ui:build",
+    "beforeBuildCommand": "bun run ui:build",
     "frontendDist": "../dist"
   },
   "app": {
