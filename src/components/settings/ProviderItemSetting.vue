@@ -4,14 +4,14 @@ import { watchImmediate } from '@vueuse/core'
 import {
   Button,
   Form,
-  FormInstanceFunctions,
+  type FormInstanceFunctions,
   FormItem,
   Input,
   Select,
 } from 'tdesign-vue-next'
 import { useTemplateRef } from 'vue'
 import { useI18n } from '../../composables'
-import { IEndpointConfigItem } from '../../database/endpointConfig'
+import type { IEndpointConfigItem } from '../../database/endpointConfig'
 import { fetchModelList } from '../../logic/modelListUtils'
 
 export interface EndpointItemSettingProps {

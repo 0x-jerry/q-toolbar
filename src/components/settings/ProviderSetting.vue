@@ -5,7 +5,7 @@ import { ref, toRaw } from 'vue'
 import { useDrawer, useI18n } from '../../composables'
 import {
   endpointConfigTable,
-  IEndpointConfigItem,
+  type IEndpointConfigItem,
 } from '../../database/endpointConfig'
 import Icon from '../Icon.vue'
 import ProviderItemSetting from './ProviderItemSetting.vue'

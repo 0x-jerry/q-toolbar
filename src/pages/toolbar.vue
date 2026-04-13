@@ -3,7 +3,7 @@ import { useAsyncData } from '@0x-jerry/vue-kit'
 import AutoResizeContainer from '../components/AutoResizeContainer.vue'
 import CarbonIcon from '../components/CarbonIcon.vue'
 import { useWinEventListener } from '../composables/useWinEventListener'
-import { IPromptConfigModel, promptConfigTable } from '../database/promptConfig'
+import { type IPromptConfigModel, promptConfigTable } from '../database/promptConfig'
 import { commands } from '../logic/commands'
 import { WindowEventName } from '../logic/events'
 

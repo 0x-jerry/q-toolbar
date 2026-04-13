@@ -6,10 +6,10 @@ import { useEventListener, useLocalStorage } from '@vueuse/core'
 import { reactive, ref, useTemplateRef } from 'vue'
 import ChatWithHistory from '../components/ChatWithHistory.vue'
 import { useWinEventListener } from '../composables/useWinEventListener'
-import { chatHistoryTable, IChatHistoryModel } from '../database/chatHistory'
+import { chatHistoryTable, type IChatHistoryModel } from '../database/chatHistory'
 import {
   chatHistoryMsgTable,
-  IChatHistoryMsgItem,
+  type IChatHistoryMsgItem,
 } from '../database/chatHistoryMsg'
 import { promptConfigTable } from '../database/promptConfig'
 import { WindowEventName } from '../logic/events'

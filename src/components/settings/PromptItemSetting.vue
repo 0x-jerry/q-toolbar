@@ -3,7 +3,7 @@ import { useAsyncData } from '@0x-jerry/vue-kit'
 import { watchImmediate } from '@vueuse/core'
 import {
   Form,
-  FormInstanceFunctions,
+  type FormInstanceFunctions,
   FormItem,
   Input,
   Select,
