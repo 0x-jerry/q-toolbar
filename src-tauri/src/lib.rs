@@ -18,7 +18,7 @@ pub fn run() {
     #[cfg(dev)]
     {
         dotenv::from_filename(".env.development").expect("load env failed");
-        unsafe  {
+        unsafe {
             std::env::set_var("RUST_BACKTRACE", "1");
         }
     }
@@ -87,8 +87,8 @@ pub fn run() {
 }
 
 fn setup_app(app: &mut App) -> Result<()> {
-    #[cfg(unix)]
-    app.set_activation_policy(tauri::ActivationPolicy::Accessory);
+    // #[cfg(unix)]
+    // app.set_activation_policy(tauri::ActivationPolicy::Accessory);
 
     let app_handle = app.handle();
 

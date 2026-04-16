@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Button, Textarea, type TextareaValue } from 'tdesign-vue-next'
-import { computed, ref } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 import { useI18n } from '../../composables'
 import Icon from '../Icon.vue'
 
@@ -30,12 +30,24 @@ function send() {
   text.value = ''
 }
 
-function onCtrlEnter(_: TextareaValue, opt: { e: KeyboardEvent }) {
+function onInputKeydown(_: TextareaValue, opt: { e: KeyboardEvent }) {
   const evt = opt.e
-  const shouldSend = evt.key === 'Enter' && (evt.ctrlKey || evt.metaKey)
-  if (!shouldSend) return
+  evt.stopPropagation()
 
-  send()
+  if (evt.key === 'Escape') {
+    ;(evt.target as HTMLInputElement).blur()
+    return
+  }
+
+  if (evt.key === 'Enter') {
+    const shouldSend = !(evt.shiftKey || evt.metaKey || evt.ctrlKey)
+
+    if (shouldSend) {
+      evt.preventDefault()
+      send()
+      return
+    }
+  }
 }
 
 function handleAbort() {
@@ -49,15 +61,31 @@ function handleAbort() {
 
 <template>
   <div class="chat-input">
-    <Textarea style="resize: none;" v-model="text" @keydown="onCtrlEnter" :placeholder="t('chat.typeMessage')"
-      :rows="3" />
+    <Textarea
+      style="resize: none"
+      v-model="text"
+      @keydown="onInputKeydown"
+      :placeholder="t('chat.typeMessage')"
+      :rows="3"
+    />
 
     <div class="actions">
-      <Button class="h-full relative text-2xl" v-if="isProcessing" @click="handleAbort" :title="t('common.abort')">
+      <Button
+        class="h-full relative text-2xl"
+        v-if="isProcessing"
+        @click="handleAbort"
+        :title="t('common.abort')"
+      >
         <div class="spinning-effect"></div>
         <Icon class="i-carbon:stop-filled-alt" />
       </Button>
-      <Button class="h-full text-2xl" v-else @click="send" :disabled="!canSend" :title="t('common.send')">
+      <Button
+        class="h-full text-2xl"
+        v-else
+        @click="send"
+        :disabled="!canSend"
+        :title="t('common.send')"
+      >
         <Icon class="i-carbon:send-alt-filled" />
       </Button>
     </div>
@@ -69,7 +97,7 @@ function handleAbort() {
   display: flex;
   gap: 8px;
   padding: 8px;
-  border-top: 1px solid #eee
+  border-top: 1px solid #eee;
 }
 
 .spinning-effect {
@@ -95,23 +123,27 @@ function handleAbort() {
     aspect-ratio: 1;
     border-radius: 50%;
     background:
-      radial-gradient(farthest-side, var(--color) 94%, #0000) top/var(--border) var(--border) no-repeat,
+      radial-gradient(farthest-side, var(--color) 94%, #0000) top/var(--border)
+        var(--border) no-repeat,
       conic-gradient(#0000 30%, var(--color));
 
-    mask: radial-gradient(farthest-side, #0000 calc(100% - var(--border)), #000 0);
+    mask: radial-gradient(
+      farthest-side,
+      #0000 calc(100% - var(--border)),
+      #000 0
+    );
     animation: l13 1s infinite linear;
   }
-
 }
 
 @keyframes l13 {
   100% {
-    transform: rotate(1turn)
+    transform: rotate(1turn);
   }
 }
 
 .actions {
   display: flex;
-  align-items: flex-end
+  align-items: flex-end;
 }
 </style>

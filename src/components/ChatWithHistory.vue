@@ -205,7 +205,11 @@ async function _startChatStream(msgs: IChatHistoryMsgItem[]) {
 }
 
 function handleAbort() {
+  const canAbort = streamRef && !streamRef.aborted
   streamRef?.abort()
+  streamRef = null
+
+  return canAbort
 }
 
 async function handleResetToMsg(msg: IChatHistoryMsgItem) {
