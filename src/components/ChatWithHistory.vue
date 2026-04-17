@@ -1,14 +1,12 @@
 <script lang="ts" setup>
 import { createPromise, type Optional } from '@0x-jerry/utils'
 import { useLoading } from '@0x-jerry/vue-kit'
-import { fetch as backendFetch, type ClientOptions } from '@tauri-apps/plugin-http'
 import { watchImmediate } from '@vueuse/core'
-import OpenAI from 'openai'
-import { ChatCompletionStream } from 'openai/lib/ChatCompletionStream.mjs'
-import type { ChatCompletionMessageParam } from 'openai/resources/index.mjs'
 import { computed, reactive, ref } from 'vue'
-import { useAppBasicConfig } from '../composables'
-import { chatHistoryTable, type IChatHistoryModel } from '../database/chatHistory'
+import {
+  chatHistoryTable,
+  type IChatHistoryModel,
+} from '../database/chatHistory'
 import {
   chatHistoryMsgTable,
   type IChatHistoryMsgItem,
@@ -17,6 +15,12 @@ import {
 import type { IEndpointConfigItem } from '../database/endpointConfig'
 import { ChatRole } from '../logic/chat'
 import ChatRoot from './Chat/ChatRoot.vue'
+import { streamText, type ModelMessage } from 'ai'
+import {
+  createOpenAICompatible,
+  type OpenAICompatibleProviderOptions,
+} from '@ai-sdk/openai-compatible'
+import { fetchWithProxy } from '../logic/fetchWithProxy'
 
 export interface ChatWithHistoryProps {
   historyId: number
@@ -25,8 +29,6 @@ export interface ChatWithHistoryProps {
 
 const props = defineProps<ChatWithHistoryProps>()
 
-const appConfig = useAppBasicConfig()
-
 const state = reactive({
   selectedText: '',
   pinned: false,
@@ -34,7 +36,7 @@ const state = reactive({
   responseMsg: null as Optional<IChatHistoryMsgModel>,
 })
 
-let streamRef: Optional<ChatCompletionStream>
+let streamRef: Optional<AbortController>
 
 const chatHistory = ref<IChatHistoryModel>()
 
@@ -129,75 +131,57 @@ async function _startChatStream(msgs: IChatHistoryMsgItem[]) {
     throw new Error(`Endpoint config is missing`)
   }
 
-  const ins = new OpenAI({
-    baseURL: baseUrl,
+  const providerName = 'my-provider'
+  const openaiProvider = createOpenAICompatible({
+    name: providerName,
     apiKey,
-    dangerouslyAllowBrowser: true,
-    async fetch(input, init) {
-      await appConfig.load()
-      const proxy = appConfig.data.proxy
-
-      if (!proxy) {
-        return globalThis.fetch(input, init)
-      }
-
-      const config: RequestInit & ClientOptions = init || {}
-
-      config.proxy = {
-        all: {
-          url: proxy,
-        },
-      }
-
-      return backendFetch(input, init)
-    },
+    baseURL: baseUrl,
+    fetch: fetchWithProxy,
   })
+
+  streamRef?.abort('Abort by new chat request')
+  streamRef = new AbortController()
 
   const resultPromise = createPromise<void>()
 
-  const stream = ins.chat.completions.stream({
-    model,
+  const instance = streamText({
+    model: openaiProvider(model),
+    providerOptions: {
+      [providerName]: {
+        reasoningEffort: 'none',
+      } satisfies OpenAICompatibleProviderOptions,
+    },
     messages: msgs.map((msg) => {
-      const item: ChatCompletionMessageParam = {
+      const item: ModelMessage = {
         role: msg.role === ChatRole.User ? ChatRole.User : ChatRole.Assistant,
         content: msg.content,
       }
 
       return item
     }),
+    abortSignal: streamRef.signal,
+    onError(evt) {
+      resultPromise.reject(evt)
+    },
+    onFinish() {
+      state.responseMsg = null
+      streamRef = null
+
+      resultPromise.resolve()
+    },
+    onAbort(evt) {
+      resultPromise.reject(evt)
+    },
   })
 
-  streamRef = stream
-
-  stream.on('end', () => {
-    state.responseMsg = null
-    streamRef = null
-
-    resultPromise.resolve()
-  })
-
-  stream.on('error', (err) => {
-    if (state.responseMsg) {
-      state.responseMsg.content += err.message
-    }
-
-    resultPromise.reject(err)
-  })
-
-  stream.on('abort', (err) => {
-    resultPromise.reject(err)
-  })
-
-  for await (const chunk of stream) {
-    const firstChoice = chunk.choices[0]
-
-    const content = firstChoice.delta.content
+  for await (const chunk of instance.textStream) {
+    const content = chunk
 
     if (!state.responseMsg) {
       throw new Error(`Response message instance is null`)
     }
 
-    state.responseMsg.content += content
+    state.responseMsg.content += content || ''
     await saveResponseMsgItem()
   }
 
@@ -205,7 +189,7 @@ async function _startChatStream(msgs: IChatHistoryMsgItem[]) {
 }
 
 function handleAbort() {
-  const canAbort = streamRef && !streamRef.aborted
+  const canAbort = streamRef && !streamRef.signal.aborted
   streamRef?.abort()
   streamRef = null
 
@@ -255,14 +239,20 @@ defineExpose({
 
 <template>
   <template v-if="chatHistory">
-    <ChatRoot :title="chatHistory.name" :messages="state.messages" :is-processing="isProcessing"
-      @rename-title="updateChatTitle" @send="handleSendMsg" @abort="handleAbort" @reset-to-msg="handleResetToMsg"
-      @delete-msg="handleDeleteMsg" @continue-from-msg="handleContinue" />
+    <ChatRoot
+      :title="chatHistory.name"
+      :messages="state.messages"
+      :is-processing="isProcessing"
+      @rename-title="updateChatTitle"
+      @send="handleSendMsg"
+      @abort="handleAbort"
+      @reset-to-msg="handleResetToMsg"
+      @delete-msg="handleDeleteMsg"
+      @continue-from-msg="handleContinue"
+    />
   </template>
   <template v-else>
-    <div class="loading">
-      Loading ...
-    </div>
+    <div class="loading">Loading ...</div>
   </template>
 </template>
 

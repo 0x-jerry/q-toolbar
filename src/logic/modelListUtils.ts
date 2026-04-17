@@ -1,5 +1,10 @@
-import OpenAI from 'openai'
 import { createCacheableFn } from './cache'
+import { fetchWithProxy } from './fetchWithProxy';
+
+interface ListModelResponse {
+  object: 'list'
+  data: { id: string; object: string }[]
+}
 
 async function _fetchModelList(opt: { baseUrl: string; apiKey?: string }) {
   const { baseUrl, apiKey } = opt
@@ -8,15 +13,17 @@ async function _fetchModelList(opt: { baseUrl: string; apiKey?: string }) {
     return []
   }
 
-  const ins = new OpenAI({
-    dangerouslyAllowBrowser: true,
-    baseURL: baseUrl,
-    apiKey,
+  const response = await fetchWithProxy(`${baseUrl}/models`, {
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+    },
   })
 
-  const list = await ins.models.list()
+  const resp: ListModelResponse = await response.json()
 
-  return list.data.map((n) => ({
+  console.log(resp)
+
+  return resp.data.map((n) => ({
     label: n.id,
     value: n.id,
   }))
