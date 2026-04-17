@@ -6,7 +6,10 @@ import { useEventListener, useLocalStorage } from '@vueuse/core'
 import { reactive, ref, useTemplateRef } from 'vue'
 import ChatWithHistory from '../components/ChatWithHistory.vue'
 import { useWinEventListener } from '../composables/useWinEventListener'
-import { chatHistoryTable, type IChatHistoryModel } from '../database/chatHistory'
+import {
+  chatHistoryTable,
+  type IChatHistoryModel,
+} from '../database/chatHistory'
 import {
   chatHistoryMsgTable,
   type IChatHistoryMsgItem,
@@ -32,7 +35,7 @@ const chatRef = useTemplateRef('chatRef')
 
 const chatHistory = ref<IChatHistoryModel>()
 
-const promptConfigApi = useAsyncData(promptConfigTable.getById)
+const promptConfigApi = useAsyncData(promptConfigTable.getById, undefined)
 
 const win = getCurrentWindow()
 
@@ -122,13 +125,19 @@ async function createChatHistory() {
 
 <template>
   <div class="page flex flex-col w-400px h-600px bg-white">
-    <ChatPageHead :icon="promptConfigApi.data.value?.icon" :title="promptConfigApi.data.value?.name"
-      v-model:pinned="pinned" />
+    <ChatPageHead
+      :icon="promptConfigApi.data.value?.icon"
+      :title="promptConfigApi.data.value?.name"
+      v-model:pinned="pinned"
+    />
 
     <template v-if="chatHistory">
       <div class="flex-1 h-0">
-        <ChatWithHistory ref="chatRef" :history-id="chatHistory.id"
-          :endpoint-config="promptConfigApi.data.value?.endpointConfig" />
+        <ChatWithHistory
+          ref="chatRef"
+          :history-id="chatHistory.id"
+          :prompt-config="promptConfigApi.data.value"
+        />
       </div>
     </template>
   </div>

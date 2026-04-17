@@ -3,6 +3,7 @@ import { useAsyncData } from '@0x-jerry/vue-kit'
 import { watchImmediate } from '@vueuse/core'
 import {
   Button,
+  Checkbox,
   Form,
   type FormInstanceFunctions,
   FormItem,
@@ -20,19 +21,19 @@ export interface EndpointItemSettingProps {
 
 const props = defineProps<EndpointItemSettingProps>()
 
-const value = defineModel<IEndpointConfigItem>({ required: true })
+const currentProviderConfig = defineModel<IEndpointConfigItem>({ required: true })
 const { t } = useI18n()
 
 const formRef = useTemplateRef<FormInstanceFunctions>('formRef')
 
 const modelListApi = useAsyncData(updateModelList, [])
 
-watchImmediate(value, () => {
+watchImmediate(currentProviderConfig, () => {
   modelListApi.load()
 })
 
 async function updateModelList(force = false) {
-  const { baseUrl, apiKey } = value.value
+  const { baseUrl, apiKey } = currentProviderConfig.value
 
   if (!baseUrl) {
     return []
@@ -62,26 +63,39 @@ defineExpose({
 
 <template>
   <div class="endpoint-item-setting">
-    <Form ref="formRef" :data="value" label-align="top">
+    <Form ref="formRef" :data="currentProviderConfig" label-align="top">
       <FormItem :label="t('common.name')" name="name">
-        <Input v-model="value.name"></Input>
+        <Input v-model="currentProviderConfig.name"></Input>
       </FormItem>
       <FormItem :label="t('common.baseUrl')" name="baseUrl">
-        <Input v-model="value.baseUrl"></Input>
+        <Input v-model="currentProviderConfig.baseUrl"></Input>
       </FormItem>
       <FormItem :label="t('common.apiKey')" name="apiKey">
-        <Input v-model="value.apiKey" type="password"></Input>
+        <Input v-model="currentProviderConfig.apiKey" type="password"></Input>
       </FormItem>
       <FormItem :label="t('common.model')" name="model">
-        <Select v-model="value.model" :options="modelListApi.data.value" :loading="modelListApi.isLoading.value" filterable>
+        <Select
+          v-model="currentProviderConfig.model"
+          :options="modelListApi.data.value"
+          :loading="modelListApi.isLoading.value"
+          filterable
+        >
           <template #panelBottomContent>
-            <Button block variant="text" theme="primary" @click="modelListApi.load(true)">{{ t('providersetting.refreshList') }}</Button>
+            <Button
+              block
+              variant="text"
+              theme="primary"
+              @click="modelListApi.load(true)"
+              >{{ t('providersetting.refreshList') }}</Button
+            >
           </template>
         </Select>
+      </FormItem>
+      <FormItem :label="t('common.reasoning')" name="reasoning">
+        <Checkbox v-model="currentProviderConfig.reasoning" ></Checkbox>
       </FormItem>
     </Form>
   </div>
 </template>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

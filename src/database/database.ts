@@ -33,6 +33,25 @@ export const COMMON_COLUMN = {
 
 const commonColumn = [COMMON_COLUMN.createdDate, COMMON_COLUMN.updatedDate]
 
+export interface ModelOption {
+  /**
+   * When save data into database
+   *
+   * @param key
+   * @param value
+   * @returns
+   */
+  serialize?: (key: string, value: unknown) => unknown
+
+  /**
+   * When read data from database
+   * @param key
+   * @param data
+   * @returns
+   */
+  deserialize?: (key: string, data: unknown) => unknown
+}
+
 export abstract class BaseModelManager<T extends BaseModel> {
   abstract readonly TABLE_NAME: string
 
@@ -41,7 +60,26 @@ export abstract class BaseModelManager<T extends BaseModel> {
    */
   abstract readonly COLUMN_NAMES: string[]
 
+  constructor(readonly opt?: ModelOption) {}
+
   readonly db = db
+
+  _deserialize<T extends Record<string, any>>(data: T[]): T[] {
+    const deserialize = this.opt?.deserialize
+
+    if (!deserialize) {
+      return data
+    }
+
+    return data.map((item) => {
+      return Object.fromEntries(
+        Object.entries(item).map(([key, value]) => [
+          key,
+          deserialize(key, value),
+        ]),
+      )
+    }) as T[]
+  }
 
   async count() {
     const sql = `select count(*) as count from ${this.TABLE_NAME}`
@@ -60,7 +98,7 @@ export abstract class BaseModelManager<T extends BaseModel> {
 
     const resp = await db.select<T[]>(sql)
 
-    return resp
+    return this._deserialize(resp)
   }
 
   async getById(id: number) {
@@ -68,7 +106,7 @@ export abstract class BaseModelManager<T extends BaseModel> {
 
     const resp = await db.select<T[]>(sql, [id])
 
-    return resp.at(0)
+    return this._deserialize(resp).at(0)
   }
 
   async findAll() {
@@ -76,7 +114,7 @@ export abstract class BaseModelManager<T extends BaseModel> {
 
     const resp = await db.select<T[]>(sql)
 
-    return resp
+    return this._deserialize(resp)
   }
 
   async deleteById(id: number) {
@@ -97,6 +135,8 @@ export abstract class BaseModelManager<T extends BaseModel> {
   }
 
   async createOne(data: CreatedModel<T>) {
+    const serialize = this.opt?.serialize
+
     const columns = [...commonColumn, ...this.COLUMN_NAMES]
 
     const columnNames = columns.join(', ')
@@ -104,7 +144,10 @@ export abstract class BaseModelManager<T extends BaseModel> {
 
     const values = [
       ...commonColumn.map((_) => dayjs().unix()),
-      ...this.COLUMN_NAMES.map((key) => Reflect.get(data, key)),
+      ...this.COLUMN_NAMES.map((key) => {
+        const v = Reflect.get(data, key)
+        return serialize ? serialize(key, v) : v
+      }),
     ]
 
     const sql = `insert into ${this.TABLE_NAME} (${columnNames}) values (${placeholders})`
@@ -118,6 +161,8 @@ export abstract class BaseModelManager<T extends BaseModel> {
   }
 
   async updateOne(data: UpdatedModel<T>, opt: IUpdateOneOption = {}) {
+    const serialize = this.opt?.serialize
+
     const { columns = this.COLUMN_NAMES } = opt
 
     const allColumns = [COMMON_COLUMN.updatedDate, ...columns]
@@ -128,7 +173,10 @@ export abstract class BaseModelManager<T extends BaseModel> {
 
     const values = [
       dayjs().unix(),
-      ...columns.map((key) => Reflect.get(data, key)),
+      ...columns.map((key) => {
+        const v = Reflect.get(data, key)
+        return serialize ? serialize(key, v) : v
+      }),
       data.id,
     ]
 

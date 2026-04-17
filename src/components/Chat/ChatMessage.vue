@@ -4,6 +4,7 @@ import { t } from '../../composables'
 import type { IChatHistoryMsgItem } from '../../database/chatHistoryMsg'
 import Icon from '../Icon.vue'
 import Markdown from '../Markdown.vue'
+import ChatReasoningContent from './ChatReasoningContent.vue'
 
 export interface ChatMessageProps {
   message: IChatHistoryMsgItem
@@ -71,12 +72,23 @@ function handleToolEvent(tool: ToolConfig) {
     </div>
 
     <div class="content">
+      <ChatReasoningContent
+        v-if="message.reasoning"
+        :content="message.reasoning"
+      />
+
       <Markdown :content="message.content" />
     </div>
     <div class="content-tools">
       <template v-for="tool in tools">
         <Tooltip :content="$t(tool.tooltip)">
-          <Button class="border-0" size="small" shape="circle" theme="default" @click="handleToolEvent(tool)">
+          <Button
+            class="border-0"
+            size="small"
+            shape="circle"
+            theme="default"
+            @click="handleToolEvent(tool)"
+          >
             <Icon :class="tool.icon" />
           </Button>
         </Tooltip>

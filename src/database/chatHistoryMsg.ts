@@ -5,6 +5,7 @@ import type { GetPureModelType } from './types'
 export interface IChatHistoryMsgModel extends BaseModel {
   role: string
   content: string
+  reasoning: string
 
   chatHistoryId: number
 }
@@ -13,7 +14,7 @@ export type IChatHistoryMsgItem = GetPureModelType<IChatHistoryMsgModel>
 
 class ChatHistoryMsgTable extends BaseModelManager<IChatHistoryMsgModel> {
   TABLE_NAME = 'chat_history_msg'
-  COLUMN_NAMES = ['role', 'content', 'chatHistoryId']
+  COLUMN_NAMES = ['role', 'content', 'chatHistoryId', 'reasoning']
 
   async getMsgs(chatHistoryId: number) {
     const sql = `select * from ${this.TABLE_NAME} where chatHistoryId = $1 order by ${COMMON_COLUMN.id}`

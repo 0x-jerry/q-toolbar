@@ -21,10 +21,16 @@ import {
   type OpenAICompatibleProviderOptions,
 } from '@ai-sdk/openai-compatible'
 import { fetchWithProxy } from '../logic/fetchWithProxy'
+import type { IPromptConfigItem } from '../database/promptConfig'
 
 export interface ChatWithHistoryProps {
   historyId: number
   endpointConfig?: IEndpointConfigItem
+
+  /**
+   * This config priority is higher than endpointConfig
+   */
+  promptConfig?: IPromptConfigItem
 }
 
 const props = defineProps<ChatWithHistoryProps>()
@@ -91,6 +97,7 @@ async function _handleSendMsg(msgContent: string) {
     chatHistoryId: historyId,
     role: ChatRole.User,
     content: msgContent,
+    reasoning: '',
   })
 
   state.messages.push(newMsgItem)
@@ -113,6 +120,7 @@ async function _continueChatStream() {
     chatHistoryId: historyId,
     role: ChatRole.Assistant,
     content: '',
+    reasoning: '',
   })
 
   state.messages.push(state.responseMsg)
@@ -125,7 +133,16 @@ async function _continueChatStream() {
 }
 
 async function _startChatStream(msgs: IChatHistoryMsgItem[]) {
-  const { apiKey, model, baseUrl } = props.endpointConfig || {}
+  const { apiKey, baseUrl } =
+    props.promptConfig?.endpointConfig || props.endpointConfig || {}
+  const model =
+    props.promptConfig?.model ||
+    props.promptConfig?.endpointConfig?.model ||
+    props.endpointConfig?.model
+  const enableReasoning =
+    props.promptConfig?.reasoning ??
+    props.promptConfig?.endpointConfig?.reasoning ??
+    props.endpointConfig?.reasoning
 
   if (!baseUrl || !apiKey || !model) {
     throw new Error(`Endpoint config is missing`)
@@ -148,7 +165,7 @@ async function _startChatStream(msgs: IChatHistoryMsgItem[]) {
     model: openaiProvider(model),
     providerOptions: {
       [providerName]: {
-        reasoningEffort: 'none',
+        reasoningEffort: enableReasoning ? 'medium' : 'none',
       } satisfies OpenAICompatibleProviderOptions,
     },
     messages: msgs.map((msg) => {
@@ -174,14 +191,23 @@ async function _startChatStream(msgs: IChatHistoryMsgItem[]) {
     },
   })
 
-  for await (const chunk of instance.textStream) {
-    const content = chunk
-
+  for await (const chunk of instance.fullStream) {
     if (!state.responseMsg) {
       throw new Error(`Response message instance is null`)
     }
 
-    state.responseMsg.content += content || ''
+    switch (chunk.type) {
+      case 'reasoning-delta':
+        state.responseMsg.reasoning += chunk.text || ''
+        break
+      case 'text-delta':
+        state.responseMsg.content += chunk.text || ''
+        break
+
+      default:
+        break
+    }
+
     await saveResponseMsgItem()
   }
 

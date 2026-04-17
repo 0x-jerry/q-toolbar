@@ -13,6 +13,8 @@ export interface IPromptConfigModel extends BaseModel {
   isBuiltin?: number
   endpointId?: number
   orderNo?: number
+  model?: string
+  reasoning?: boolean
 
   endpointConfig?: IEndpointConfigModel
 }
@@ -28,7 +30,23 @@ class PromptConfigTable extends BaseModelManager<IPromptConfigModel> {
     'isBuiltin',
     'endpointId',
     'orderNo',
+    'model',
+    'reasoning',
   ]
+
+  constructor() {
+    super({
+      deserialize(key, value) {
+        switch (key) {
+          case 'reasoning':
+            return value === 'true'
+
+          default:
+            return value
+        }
+      },
+    })
+  }
 
   async getById(id: number): Promise<IPromptConfigModel | undefined> {
     const resp = await super.getById(id)

@@ -36,7 +36,8 @@
     "search": "Search",
     "detecting": "Detecting",
     "copied": "Copied",
-    "loading": "Loading"
+    "loading": "Loading",
+    "reasoning": "Reasoning"
   },
   "main": {
     "home": "Home",
