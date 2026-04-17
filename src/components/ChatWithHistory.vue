@@ -178,7 +178,7 @@ async function _startChatStream(msgs: IChatHistoryMsgItem[]) {
     }),
     abortSignal: streamRef.signal,
     onError(evt) {
-      resultPromise.reject(evt)
+      resultPromise.reject(evt.error)
     },
     onFinish() {
       state.responseMsg = null
@@ -186,8 +186,8 @@ async function _startChatStream(msgs: IChatHistoryMsgItem[]) {
 
       resultPromise.resolve()
     },
-    onAbort(evt) {
-      resultPromise.reject(evt)
+    onAbort() {
+      resultPromise.reject(`Aborted`)
     },
   })
 
