@@ -26,7 +26,7 @@ const { height } = useElementSize(contentRef)
       @click="expanded = !expanded"
     >
       <div class="flex-1 truncate">{{ t('common.thinkingContent') }}</div>
-      <div class="icon i-carbon-caret-down text-xl mr-1"></div>
+      <div class="icon i-carbon-chevron-down text-xl mr-1"></div>
     </div>
     <div class="content" :style="{ height: expanded ? height + 'px' : 0 }">
       <Markdown ref="contentRef" :content="content" />
