@@ -18,7 +18,6 @@ import ChatRoot from './Chat/ChatRoot.vue'
 import { streamText, type ModelMessage } from 'ai'
 import {
   createOpenAICompatible,
-  type OpenAICompatibleProviderOptions,
 } from '@ai-sdk/openai-compatible'
 import { fetchWithProxy } from '../logic/fetchWithProxy'
 import type { IPromptConfigItem } from '../database/promptConfig'
@@ -165,8 +164,9 @@ async function _startChatStream(msgs: IChatHistoryMsgItem[]) {
     model: openaiProvider(model),
     providerOptions: {
       [providerName]: {
+        enable_thinking: enableReasoning,
         reasoningEffort: enableReasoning ? 'medium' : 'none',
-      } satisfies OpenAICompatibleProviderOptions,
+      },
     },
     messages: msgs.map((msg) => {
       const item: ModelMessage = {

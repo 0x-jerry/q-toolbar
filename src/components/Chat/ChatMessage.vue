@@ -8,6 +8,7 @@ import ChatReasoningContent from './ChatReasoningContent.vue'
 
 export interface ChatMessageProps {
   message: IChatHistoryMsgItem
+  isLastOne?: boolean
 }
 
 export interface ChatMessageEmits {
@@ -75,6 +76,7 @@ function handleToolEvent(tool: ToolConfig) {
       <ChatReasoningContent
         v-if="message.reasoning"
         :content="message.reasoning"
+        :init-expanded="isLastOne"
       />
 
       <Markdown :content="message.content" />

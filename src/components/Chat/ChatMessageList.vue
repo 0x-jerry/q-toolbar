@@ -25,8 +25,16 @@ async function handleCopy(msg: IChatHistoryMsgItem) {
 
 <template>
   <div class="message-list">
-    <ChatMessage v-for="m in messages.toReversed()" :key="m.id" :message="m" @copy="handleCopy"
-      @reset-to="emit('reset-to', $event)" @delete="emit('delete', $event)" @continue="emit('continue', $event)" />
+    <ChatMessage
+      v-for="(m, idx) in messages.toReversed()"
+      :key="m.id"
+      :message="m"
+      @copy="handleCopy"
+      :is-last-one="idx === 0"
+      @reset-to="emit('reset-to', $event)"
+      @delete="emit('delete', $event)"
+      @continue="emit('continue', $event)"
+    />
   </div>
 </template>
 
