@@ -68,6 +68,12 @@ function handleClickToBottom() {
 
 function handleScrollEvent(evt: WheelEvent) {
   if (evt.deltaY >= 0) {
+    const el = containerEl.value
+    if (!el) return
+    console.log(el.clientHeight, el.scrollTop, el.clientHeight)
+    const isHitBottom = el.scrollTop + el.clientHeight >= el.scrollHeight
+
+    isStickyToBottom.value = isHitBottom
     return
   }
 
