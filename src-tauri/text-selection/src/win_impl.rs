@@ -9,10 +9,7 @@ use windows::Win32::{
     },
 };
 
-use crate::{
-    types::HostHelperTrait,
-    SelectionRect,
-};
+use crate::{types::HostHelperTrait, SelectionRect};
 
 #[derive(Default)]
 pub struct HostImpl;
@@ -21,7 +18,7 @@ impl HostHelperTrait for HostImpl {
     fn detect_selection_rect(&self) -> Result<Option<SelectionRect>> {
         // use other thread to get text, avoid break this thread
         let auto_handle = thread::spawn(|| {
-            let selected_text = get_selection_range().unwrap();
+            let selected_text = get_selection_range();
             selected_text
         });
 
@@ -32,7 +29,9 @@ impl HostHelperTrait for HostImpl {
             return Ok(None);
         }
 
-        Ok(selection.unwrap())
+        let selection = selection.unwrap();
+
+        selection
     }
 
     fn get_selected_text(&self) -> Result<String> {
