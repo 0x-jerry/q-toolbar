@@ -1,6 +1,6 @@
 import vue from '@vitejs/plugin-vue'
 import uno from 'unocss/vite'
-import router from 'unplugin-vue-router/vite'
+import router from 'vue-router/vite'
 import { defineConfig } from 'vite'
 
 const host = process.env.TAURI_DEV_HOST
