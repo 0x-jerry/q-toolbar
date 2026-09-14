@@ -1,11 +1,18 @@
 <script setup lang="ts">
-import { Button, Textarea, type TextareaValue } from 'tdesign-vue-next'
+import { Textarea, type TextareaValue } from 'tdesign-vue-next'
 import { computed, ref } from 'vue'
 import { useI18n } from '../../composables'
 import Icon from '../Icon.vue'
+import SelectMenu from '../SelectMenu.vue'
+
+export interface ChatInputEndpointOption {
+  id?: number
+  name?: string
+}
 
 export interface ChatInputProps {
   isProcessing?: boolean
+  endpointOptions?: ChatInputEndpointOption[]
 }
 
 export type ChatInputEmits = {
@@ -17,9 +24,17 @@ const props = defineProps<ChatInputProps>()
 const emit = defineEmits<ChatInputEmits>()
 const { t } = useI18n()
 
+const endpointConfigId = defineModel<number | undefined>('endpointConfigId')
+
 const text = ref('')
 
 const canSend = computed(() => text.value.trim().length > 0)
+const hasEndpointOptions = computed(() => !!props.endpointOptions?.length)
+const endpointSelectOptions = computed(() =>
+  (props.endpointOptions ?? []).flatMap((c) =>
+    c.id == null ? [] : [{ label: c.name ?? '', value: c.id }],
+  ),
+)
 
 function send() {
   if (!canSend.value) return
@@ -60,9 +75,9 @@ function handleAbort() {
 </script>
 
 <template>
-  <div class="chat-input">
+  <div class="composer">
     <Textarea
-      class="flex-1"
+      class="composer-textarea"
       style="resize: none"
       v-model="text"
       @keydown="onInputKeydown"
@@ -70,41 +85,123 @@ function handleAbort() {
       :autosize="{ minRows: 2, maxRows: 8 }"
     />
 
-    <div class="actions">
-      <Button
-        class="h-full relative text-2xl"
+    <div class="composer-footer">
+      <SelectMenu
+        v-if="hasEndpointOptions"
+        v-model="endpointConfigId"
+        class="composer-endpoint"
+        :options="endpointSelectOptions"
+        :placeholder="t('chat.selectEndpoint')"
+      />
+
+      <button
         v-if="isProcessing"
-        @click="handleAbort"
+        type="button"
+        class="composer-action is-danger"
         :title="t('common.abort')"
+        :aria-label="t('common.abort')"
+        @click="handleAbort"
       >
         <div class="spinning-effect"></div>
         <Icon class="i-carbon:stop-filled-alt" />
-      </Button>
-      <Button
-        class="h-full text-2xl"
+      </button>
+      <button
         v-else
-        theme="primary"
-        @click="send"
-        :disabled="!canSend"
+        type="button"
+        class="composer-action"
         :title="t('common.send')"
+        :aria-label="t('common.send')"
+        :disabled="!canSend"
+        @click="send"
       >
         <Icon class="i-carbon:send-alt-filled" />
-      </Button>
+      </button>
     </div>
   </div>
 </template>
 
 <style scoped>
-.chat-input {
+.composer {
   display: flex;
-  gap: 8px;
-  padding: 8px;
-  border-top: 1px solid var(--color-line);
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
   background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(8px);
+}
+
+.composer:focus-within {
+  border-color: var(--color-accent);
+}
+
+.composer-textarea {
+  width: 100%;
+}
+
+.composer-textarea :deep(.t-textarea__inner) {
+  border: 0;
+  outline: none;
+  box-shadow: none;
+  background: transparent;
+  padding: 4px 2px;
+  color: var(--color-ink);
+}
+
+.composer-textarea :deep(.t-textarea__inner:hover),
+.composer-textarea :deep(.t-textarea__inner:focus),
+.composer-textarea :deep(.t-textarea__inner.t-is-focused) {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.composer-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.composer-endpoint {
+  max-width: 180px;
+}
+
+.composer-action {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-accent);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  transition: opacity var(--duration-fast);
+}
+
+.composer-action:hover:not(:disabled) {
+  opacity: 0.75;
+}
+
+.composer-action:disabled {
+  color: var(--color-ink-faint);
+  cursor: not-allowed;
+}
+
+.composer-action.is-danger {
+  color: var(--color-danger);
 }
 
 .spinning-effect {
-  --size: 40px;
+  --size: 24px;
 
   position: absolute;
   z-index: 0;
@@ -115,8 +212,8 @@ function handleAbort() {
   transform: translate(-50%, -50%);
 
   &::before {
-    --border: 4px;
-    --color: white;
+    --border: 3px;
+    --color: var(--color-danger);
     position: absolute;
     display: block;
     top: 0;
@@ -143,10 +240,5 @@ function handleAbort() {
   100% {
     transform: rotate(1turn);
   }
-}
-
-.actions {
-  display: flex;
-  align-items: flex-end;
 }
 </style>

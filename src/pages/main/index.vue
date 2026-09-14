@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useAsyncData } from '@0x-jerry/vue-kit'
-import { computed, onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import ChatWithHistory from '../../components/ChatWithHistory.vue'
 import { useI18n } from '../../composables'
 import { chatHistoryTable, type IChatHistoryModel } from '../../database/chatHistory'
@@ -16,12 +16,6 @@ const selectedHistory = ref<IChatHistoryModel | null>(null)
 
 const state = reactive({
   endpointConfigId: undefined as number | undefined,
-})
-
-const selectedEndpoint = computed(() => {
-  return endpointConfigsApi.data.value.find(
-    (c) => c.id === state.endpointConfigId,
-  )
 })
 
 onMounted(() => {
@@ -60,14 +54,16 @@ async function updateHistoryName(name: string) {
     <section class="flex flex-col h-full flex-1 w-0 bg-surface">
       <template v-if="selectedHistory">
         <MainChatHeader
-          v-model:endpoint-config-id="state.endpointConfigId"
           :history-name="selectedHistory.name"
-          :endpoint-options="endpointConfigsApi.data.value"
           @rename="updateHistoryName"
         />
 
         <div class="flex-1 h-0">
-          <ChatWithHistory :history-id="selectedHistory.id" :endpoint-config="selectedEndpoint" />
+          <ChatWithHistory
+            v-model:endpoint-config-id="state.endpointConfigId"
+            :history-id="selectedHistory.id"
+            :endpoint-options="endpointConfigsApi.data.value"
+          />
         </div>
       </template>
       <template v-else>

@@ -12,7 +12,7 @@ import {
   type IChatHistoryMsgItem,
   type IChatHistoryMsgModel,
 } from '../database/chatHistoryMsg'
-import type { IEndpointConfigItem } from '../database/endpointConfig'
+import type { IEndpointConfigModel } from '../database/endpointConfig'
 import { ChatRole } from '../logic/chat'
 import ChatRoot from './Chat/ChatRoot.vue'
 import { streamText, type ModelMessage } from 'ai'
@@ -24,15 +24,21 @@ import type { IPromptConfigItem } from '../database/promptConfig'
 
 export interface ChatWithHistoryProps {
   historyId: number
-  endpointConfig?: IEndpointConfigItem
+  endpointOptions?: IEndpointConfigModel[]
 
   /**
-   * This config priority is higher than endpointConfig
+   * This config priority is higher than endpointOptions
    */
   promptConfig?: IPromptConfigItem
 }
 
 const props = defineProps<ChatWithHistoryProps>()
+
+const endpointConfigId = defineModel<number | undefined>('endpointConfigId')
+
+const selectedEndpoint = computed(() =>
+  props.endpointOptions?.find((c) => c.id === endpointConfigId.value),
+)
 
 const state = reactive({
   selectedText: '',
@@ -132,16 +138,17 @@ async function _continueChatStream() {
 }
 
 async function _startChatStream(msgs: IChatHistoryMsgItem[]) {
+  const endpointConfig = selectedEndpoint.value
   const { apiKey, baseUrl } =
-    props.promptConfig?.endpointConfig || props.endpointConfig || {}
+    props.promptConfig?.endpointConfig || endpointConfig || {}
   const model =
     props.promptConfig?.model ||
     props.promptConfig?.endpointConfig?.model ||
-    props.endpointConfig?.model
+    endpointConfig?.model
   const enableReasoning =
     props.promptConfig?.reasoning ??
     props.promptConfig?.endpointConfig?.reasoning ??
-    props.endpointConfig?.reasoning
+    endpointConfig?.reasoning
 
   if (!baseUrl || !apiKey || !model) {
     throw new Error(`Endpoint config is missing`)
@@ -266,9 +273,11 @@ defineExpose({
 <template>
   <template v-if="chatHistory">
     <ChatRoot
+      v-model:endpoint-config-id="endpointConfigId"
       :title="chatHistory.name"
       :messages="state.messages"
       :is-processing="isProcessing"
+      :endpoint-options="endpointOptions"
       @rename-title="updateChatTitle"
       @send="handleSendMsg"
       @abort="handleAbort"
