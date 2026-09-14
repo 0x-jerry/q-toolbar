@@ -132,7 +132,11 @@ onClickOutside(rootEl, close)
         @mouseenter="activeIndex = idx"
         @click="select(option)"
       >
-        {{ option.label }}
+        <span class="select-menu-option-label">{{ option.label }}</span>
+        <Icon
+          v-if="option.value === model"
+          class="select-menu-option-check i-carbon:checkmark"
+        />
       </li>
     </ul>
   </div>
@@ -197,32 +201,51 @@ onClickOutside(rootEl, close)
   max-width: 260px;
   max-height: 240px;
   margin: 0;
-  padding: 4px;
+  padding: 3px;
   overflow: auto;
   border: 1px solid var(--color-line);
   border-radius: var(--radius-md);
   background: var(--color-surface);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-sm);
   list-style: none;
 }
 
 .select-menu-option {
-  overflow: hidden;
-  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  padding: 4px 6px;
   border-radius: var(--radius-sm);
-  color: var(--color-ink);
-  font-size: 13px;
-  text-align: right;
+  color: var(--color-ink-muted);
+  font-size: 12px;
+  line-height: 16px;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast),
+    color var(--duration-fast);
+}
+
+.select-menu-option-label {
+  min-width: 0;
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  cursor: pointer;
+}
+
+.select-menu-option-check {
+  flex: none;
+  font-size: 12px;
 }
 
 .select-menu-option.is-active {
   background: var(--color-surface-2);
+  color: var(--color-ink);
 }
 
 .select-menu-option.is-selected {
+  background: var(--color-accent-soft);
   color: var(--color-accent);
+  font-weight: 500;
 }
 </style>

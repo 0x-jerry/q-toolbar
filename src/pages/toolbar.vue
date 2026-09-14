@@ -132,9 +132,6 @@ function handleKeydown(evt: KeyboardEvent) {
           >
             <CarbonIcon v-if="conf.icon" :name="conf.icon" />
             <span v-else class="toolbar-label">{{ conf.name }}</span>
-            <span v-if="idx < 9" class="toolbar-hint" aria-hidden="true">
-              {{ idx + 1 }}
-            </span>
           </button>
         </template>
         <span v-else class="toolbar-empty">{{ t('toolbar.noPrompts') }}</span>
@@ -156,7 +153,7 @@ function handleKeydown(evt: KeyboardEvent) {
   background: var(--color-surface);
   border: 1px solid var(--color-line);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .toolbar-item {
@@ -193,23 +190,6 @@ function handleKeydown(evt: KeyboardEvent) {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.toolbar-hint {
-  position: absolute;
-  top: 0;
-  right: 2px;
-  font-size: 9px;
-  line-height: 1;
-  color: var(--color-ink-faint);
-  opacity: 0;
-  transition: opacity var(--duration-fast);
-
-  .toolbar-item:hover &,
-  .toolbar-item:focus-visible &,
-  .toolbar-item.is-active & {
-    opacity: 1;
-  }
 }
 
 .toolbar-empty {
