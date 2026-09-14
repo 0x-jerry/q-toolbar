@@ -1,3 +1,4 @@
+import { createSharedComposable } from '@vueuse/core'
 import { isEqual } from 'lodash-es'
 import { ref, toRaw } from 'vue'
 import { commands } from '../logic/commands'
@@ -5,16 +6,20 @@ import { WindowEventName } from '../logic/events'
 import type { AppBasicConfig } from '../types'
 import { useWinEventListener } from './useWinEventListener'
 
-export function useAppBasicConfig() {
+export const useAppBasicConfig = createSharedComposable(() => {
   const conf = ref<Partial<AppBasicConfig>>({})
+  const loaded = ref(false)
 
   useWinEventListener(WindowEventName.ConfigurationChanged, () => {
-    reload()
+    void reload()
   })
 
   return {
     get data() {
       return conf.value
+    },
+    get isLoaded() {
+      return loaded.value
     },
     load: reload,
     save,
@@ -22,6 +27,8 @@ export function useAppBasicConfig() {
 
   async function reload() {
     const new_conf = await commands.getConfiguration()
+
+    loaded.value = true
 
     if (isEqual(conf.value, new_conf)) {
       return
@@ -35,4 +42,4 @@ export function useAppBasicConfig() {
 
     await commands.saveConfiguration({ conf: new_conf })
   }
-}
+})

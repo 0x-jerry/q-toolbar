@@ -22,7 +22,7 @@ const { height } = useElementSize(contentRef)
 <template>
   <div class="reasoning" :class="{ 'is-expanded': expanded }">
     <div
-      class="flex mb-1 text-gray-4 items-center select-none cursor-pointer"
+      class="flex mb-1 text-ink-faint items-center select-none cursor-pointer"
       @click="expanded = !expanded"
     >
       <div class="flex-1 truncate">{{ t('common.thinkingContent') }}</div>
@@ -36,7 +36,7 @@ const { height } = useElementSize(contentRef)
 
 <style lang="less" scoped>
 .reasoning {
-  border-left: 4px solid #ddd;
+  border-left: 2px solid var(--color-line-strong);
   margin-bottom: 8px;
   padding-left: 8px;
 

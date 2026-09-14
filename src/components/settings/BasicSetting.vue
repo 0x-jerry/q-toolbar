@@ -1,15 +1,28 @@
 <script lang='ts' setup>
 import { Button, Input, Select, Switch } from 'tdesign-vue-next'
-import { useAppBasicConfig, useI18n } from '../../composables'
+import { computed } from 'vue'
+import { useAppBasicConfig, useI18n, useTheme } from '../../composables'
 import { commands } from '../../logic/commands'
 import { applyLangUpdate, availableLangs, defaultLang } from '../../logic/i18n'
+import type { ThemeMode } from '../../types'
 import ShortcutInput from '../ShortcutInput.vue'
 import SettingTitle from './SettingTitle.vue'
 
 const basicConfig = useAppBasicConfig()
 const { t } = useI18n()
+const { mode, setMode } = useTheme()
 
 basicConfig.load()
+
+const themeOptions = computed(() => [
+  { label: t('basicsetting.themeLight'), value: 'light' },
+  { label: t('basicsetting.themeDark'), value: 'dark' },
+  { label: t('basicsetting.themeSystem'), value: 'system' },
+])
+
+function handleThemeChange(value: unknown) {
+  void setMode(value as ThemeMode)
+}
 
 const langOptions = availableLangs.map((item) => ({
   label: item,
@@ -61,6 +74,15 @@ async function saveConfig() {
     </SettingTitle>
 
     <div class="flex flex-col gap-2">
+      <div class="field-row">
+        <label>{{ t('basicsetting.theme') }}</label>
+        <Select
+          class="flex-1"
+          :model-value="mode"
+          :options="themeOptions"
+          @change="handleThemeChange"
+        />
+      </div>
       <div class="field-row">
         <label>{{ t('basicsetting.lang') }}</label>
         <Select class="flex-1" v-model="defaultLang" :options="langOptions" @change="updateLang" />

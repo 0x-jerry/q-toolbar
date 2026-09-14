@@ -69,7 +69,39 @@ impl From<AppBasicConfigV2> for AppBasicConfigV3 {
     }
 }
 
-pub type AppBasicConfig = AppBasicConfigV3;
+#[derive(Debug, Serialize, Deserialize, SmartDefault, Clone, Versioned)]
+#[serde(rename_all = "camelCase")]
+pub struct AppBasicConfigV4 {
+    #[default = 4]
+    pub version: u32,
+    pub proxy: String,
+
+    pub enable_auto_trigger: bool,
+    pub enable_listen_clipboard: bool,
+    pub enable_global_shortcut: bool,
+    pub global_shortcut: String,
+
+    pub autostart: bool,
+
+    #[default = "system"]
+    pub theme: String,
+}
+
+impl From<AppBasicConfigV3> for AppBasicConfigV4 {
+    fn from(value: AppBasicConfigV3) -> Self {
+        AppBasicConfigV4 {
+            proxy: value.proxy,
+            enable_auto_trigger: value.enable_auto_trigger,
+            enable_listen_clipboard: value.enable_listen_clipboard,
+            enable_global_shortcut: value.enable_global_shortcut,
+            global_shortcut: value.global_shortcut,
+            autostart: value.autostart,
+            ..Default::default()
+        }
+    }
+}
+
+pub type AppBasicConfig = AppBasicConfigV4;
 
 const CONFIGURATION_FILE_NAME: &str = "config.json";
 const CONFIGURATION_KEY: &str = "data";
@@ -85,7 +117,13 @@ pub fn load(app: &AppHandle) -> Result<AppBasicConfig> {
         .flatten()
         .unwrap_or_default() as u32;
 
-    let value = migration!(value, AppBasicConfigV1, AppBasicConfigV2, AppBasicConfigV3)?;
+    let value = migration!(
+        value,
+        AppBasicConfigV1,
+        AppBasicConfigV2,
+        AppBasicConfigV3,
+        AppBasicConfigV4
+    )?;
 
     if version != value.version {
         save(app, &value)?;

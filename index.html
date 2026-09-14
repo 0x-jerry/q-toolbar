@@ -5,6 +5,23 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Q Toolbar</title>
+    <script>
+      // Keep in sync with THEME_STORAGE_KEY in src/composables/useTheme.ts
+      (function () {
+        var stored = localStorage.getItem('app-theme')
+        var mode =
+          stored === 'dark' || stored === 'light' || stored === 'system'
+            ? stored
+            : 'system'
+        var isDark =
+          mode === 'dark' ||
+          (mode === 'system' &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches)
+        var theme = isDark ? 'dark' : 'light'
+        document.documentElement.dataset.theme = theme
+        document.documentElement.setAttribute('theme-mode', theme)
+      })()
+    </script>
   </head>
 
   <body>

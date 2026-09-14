@@ -57,7 +57,7 @@ async function updateHistoryName(name: string) {
   <div class="flex h-full">
     <MainHistorySidebar v-model:selected-history="selectedHistory" />
 
-    <section class="flex flex-col h-full flex-1 w-0 bg-white">
+    <section class="flex flex-col h-full flex-1 w-0 bg-surface">
       <template v-if="selectedHistory">
         <MainChatHeader
           v-model:endpoint-config-id="state.endpointConfigId"
@@ -71,7 +71,7 @@ async function updateHistoryName(name: string) {
         </div>
       </template>
       <template v-else>
-        <div class="flex items-center justify-center h-full text-muted">
+        <div class="flex items-center justify-center h-full text-ink-faint">
           {{ t('chat.selectHistory') }}
         </div>
       </template>

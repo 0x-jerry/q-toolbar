@@ -21,7 +21,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <div class="flex gap-1 items-center p-2 border-(0 b solid gray-2)">
+  <div class="flex gap-1 items-center p-2 border-b border-line">
     <div class="truncate w-200px">
       <ClickToEdit :value="historyName" @ok="emit('rename', $event)">
         <div class="w-full truncate">

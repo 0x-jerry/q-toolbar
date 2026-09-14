@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Button, Textarea, type TextareaValue } from 'tdesign-vue-next'
-import { computed, nextTick, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from '../../composables'
 import Icon from '../Icon.vue'
 
@@ -62,11 +62,12 @@ function handleAbort() {
 <template>
   <div class="chat-input">
     <Textarea
+      class="flex-1"
       style="resize: none"
       v-model="text"
       @keydown="onInputKeydown"
       :placeholder="t('chat.typeMessage')"
-      :rows="3"
+      :autosize="{ minRows: 2, maxRows: 8 }"
     />
 
     <div class="actions">
@@ -82,6 +83,7 @@ function handleAbort() {
       <Button
         class="h-full text-2xl"
         v-else
+        theme="primary"
         @click="send"
         :disabled="!canSend"
         :title="t('common.send')"
@@ -97,7 +99,8 @@ function handleAbort() {
   display: flex;
   gap: 8px;
   padding: 8px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--color-line);
+  background: var(--color-surface);
 }
 
 .spinning-effect {

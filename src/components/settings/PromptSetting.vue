@@ -90,7 +90,7 @@ async function applyChangeOrder() {
 
     <div class="flex flex-col gap-2">
       <template v-if="!configsApi.data.value.length">
-        <div class="flex text-center justify-center py-8 bg-light-2">
+        <div class="flex text-center justify-center py-8 bg-surface-2">
           <Button variant="text" @click="handleNewFunction">+ {{ t('promptsetting.addConfig') }}</Button>
         </div>
       </template>

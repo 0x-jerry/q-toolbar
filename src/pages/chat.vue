@@ -124,7 +124,7 @@ async function createChatHistory() {
 </script>
 
 <template>
-  <div class="page flex flex-col w-400px h-600px bg-white">
+  <div class="page flex flex-col w-400px h-screen bg-surface text-ink overflow-hidden">
     <ChatPageHead
       :icon="promptConfigApi.data.value?.icon"
       :title="promptConfigApi.data.value?.name"
@@ -143,4 +143,3 @@ async function createChatHistory() {
   </div>
 </template>
 
-<style lang="scss" scoped></style>

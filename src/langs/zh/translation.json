@@ -4,6 +4,10 @@
     "listenClipboard": "监听剪贴板",
     "openSettingFolder": "打开配置文件夹",
     "lang": "语言",
+    "theme": "主题",
+    "themeLight": "浅色",
+    "themeDark": "深色",
+    "themeSystem": "跟随系统",
     "autoTrigger": "自动触发",
     "shortcut": "快捷键",
     "autostart": "开机启动"
@@ -13,7 +17,10 @@
     "selectEndpoint": "选择一个 Endpoint",
     "selectHistory": "在左边选择一个对话来查看",
     "typeMessage": "输入一条消息",
-    "noHistory": "没有聊天记录"
+    "noHistory": "没有聊天记录",
+    "groupToday": "今天",
+    "groupYesterday": "昨天",
+    "groupEarlier": "更早"
   },
   "common": {
     "name": "名称",
@@ -38,16 +45,16 @@
     "copied": "已复制",
     "loading": "加载中",
     "reasoning": "思考模式",
-    "thinkingContent": "思考内容"
+    "thinkingContent": "思考内容",
+    "pin": "固定",
+    "unpin": "取消固定",
+    "close": "关闭"
   },
   "main": {
     "home": "首页",
     "settings": "设置",
     "statistics": "统计",
-    "basicSettings": "基础设置",
-    "providerSettings": "Provider设置",
-    "promptSettings": "Prompt设置",
-    "aboutSettings": "关于"
+    "basicSettings": "基础设置"
   },
   "promptsetting": {
     "title": "Prompt配置",
@@ -65,5 +72,12 @@
     "copyMsg": "复制内容",
     "deleteMsg": "删除此消息",
     "resetMsg": "重置到此消息"
+  },
+  "toolbar": {
+    "noPrompts": "未配置任何 Prompt"
+  },
+  "statistics": {
+    "selectRange": "选择时间：",
+    "noData": "暂无数据"
   }
 }

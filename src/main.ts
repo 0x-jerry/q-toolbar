@@ -5,6 +5,7 @@ import { i18n } from './logic/i18n'
 import { router } from './router'
 
 import 'normalize.css'
+import './styles/tokens.css'
 import './styles/index.css'
 import 'tdesign-vue-next/es/style/index.css'
 import 'uno.css'

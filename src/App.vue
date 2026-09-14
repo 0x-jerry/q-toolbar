@@ -3,8 +3,11 @@ import { useEventListener } from '@vueuse/core'
 import { ConfigProvider } from 'tdesign-vue-next'
 import NotificationPlugin from 'tdesign-vue-next/es/notification/plugin'
 import { onErrorCaptured, onMounted } from 'vue'
+import { useTheme } from './composables'
 import { commands } from './logic/commands'
 import { tDesignConfig } from './logic/tdesign'
+
+useTheme()
 
 onMounted(() => {
   commands.applyAppearance()

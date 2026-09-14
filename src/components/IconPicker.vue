@@ -74,7 +74,7 @@ function handleSelect(name: string) {
 <template>
   <div class="text-2xl inline-block">
     <Popup v-model="state.visible" trigger="click">
-      <div class="icon-picker border-(1 solid light-8) rounded size-8 flex-center cursor-pointer"
+      <div class="icon-picker border border-line rounded size-8 flex-center cursor-pointer"
         :class="{ 'disabled': disabled }">
         <CarbonIcon :name="vValue || 'data-categorical'" />
       </div>
@@ -91,7 +91,7 @@ function handleSelect(name: string) {
 
           <div class="h-200px overflow-auto">
             <div class="icons text-2xl">
-              <span class="size-8 cursor-pointer hover:bg-light-6 flex-center rounded" v-for="name in filteredNames"
+              <span class="size-8 cursor-pointer hover:bg-surface-3 flex-center rounded" v-for="name in filteredNames"
                 :key="name" @click="handleSelect(name)" :title="name">
                 <CarbonIcon :name="name" />
               </span>
@@ -105,17 +105,17 @@ function handleSelect(name: string) {
 
 <style scoped>
 .icon-picker {
-  --uno: bg-white;
+  background: var(--color-surface);
 
   &:hover {
-    --uno: bg-light-6;
+    background: var(--color-surface-3);
   }
 
   &.disabled {
     cursor: auto;
 
     &:hover {
-      --uno: bg-white;
+      background: var(--color-surface);
     }
   }
 }

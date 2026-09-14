@@ -1,9 +1,13 @@
-<script lang='ts' setup>
+<script lang="ts" setup>
 import { useAsyncData } from '@0x-jerry/vue-kit'
 import dayjs from 'dayjs'
 import { DateRangePicker } from 'tdesign-vue-next'
 import { computed, reactive, watch } from 'vue'
+import Chart from '../../components/Chart.vue'
+import { useI18n } from '../../composables'
 import { selectionTable } from '../../database'
+
+const { t } = useI18n()
 
 const query = reactive({
   dates: [
@@ -50,19 +54,26 @@ const chartData = computed(() => {
 <template>
   <div class="p-4">
     <div class="query mb-2">
-      <span>选择时间：</span>
+      <span>{{ t('statistics.selectRange') }}</span>
       <DateRangePicker v-model="query.dates" />
     </div>
     <div class="flex justify-center">
-      <div v-if="chartData.labels.length">
-        <!-- <Chart type="pie" :data="chartData" :options="chartOptions" class="w-400px" /> -->
-        <div>TODO, migrate Chart component</div>
+      <div v-if="chartData.labels.length" class="chart-wrap">
+        <Chart type="pie" :data="chartData" />
       </div>
-      <div v-else class="text-center text-gray h-100px text-2xl flex items-center">
-        <div>暂无数据</div>
+      <div
+        v-else
+        class="text-center text-ink-faint h-100px text-lg flex items-center"
+      >
+        {{ t('statistics.noData') }}
       </div>
     </div>
   </div>
 </template>
 
-<style lang='scss' scoped></style>
+<style lang="scss" scoped>
+.chart-wrap {
+  width: 420px;
+  max-width: 100%;
+}
+</style>

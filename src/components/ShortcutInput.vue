@@ -82,6 +82,6 @@ function onBlur() {
 
 <style lang='less' scoped>
 .shortcut-input {
-  --uno: flex items-center justify-center text-gray-6;
+  --uno: flex items-center justify-center text-ink-muted;
 }
 </style>

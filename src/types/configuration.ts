@@ -1,3 +1,5 @@
+export type ThemeMode = 'light' | 'dark' | 'system'
+
 export interface AppBasicConfig {
   version: number
   proxy: string
@@ -9,4 +11,6 @@ export interface AppBasicConfig {
 
   enableGlobalShortcut: boolean
   globalShortcut: string
+
+  theme: ThemeMode
 }

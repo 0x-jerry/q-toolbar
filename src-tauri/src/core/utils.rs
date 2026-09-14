@@ -2,16 +2,20 @@ use tauri::{AppHandle, LogicalPosition, PhysicalPosition, WebviewWindow};
 
 use super::VerticalMoveDir;
 
+// Keep in sync with the toolbar strip height in src/pages/toolbar.vue:
+// wrap padding 16 + border 2 + pill padding 8 + item 28 = 54
+const TOOLBAR_STRIP_HEIGHT: f32 = 54.0;
+
 pub fn calc_window_position(
     win: &WebviewWindow,
     dir: Option<VerticalMoveDir>,
 ) -> PhysicalPosition<f64> {
     let offset_x = -30.0;
-    let offset_y = 16.0;
+    let gap = 16.0;
     let offset_y = if dir.unwrap_or_default() == VerticalMoveDir::Up {
-        -(offset_y + 32.0)
+        -(gap + TOOLBAR_STRIP_HEIGHT)
     } else {
-        offset_y
+        gap
     };
 
     let cursor_pos = win.cursor_position().unwrap();

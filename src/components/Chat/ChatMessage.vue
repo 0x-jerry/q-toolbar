@@ -105,12 +105,16 @@ function handleToolEvent(tool: ToolConfig) {
   position: relative;
 
   .content-tools {
-    --uno: text-xs transition flex gap-2 items-center;
-    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-top: 6px;
     opacity: 0;
+    transition: opacity var(--duration-fast);
   }
 
-  &:hover {
+  &:hover,
+  &:focus-within {
     .content-tools {
       opacity: 1;
     }
@@ -118,8 +122,9 @@ function handleToolEvent(tool: ToolConfig) {
 }
 
 .content {
-  padding: 8px;
-  border-radius: 6px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
   max-width: 100%;
   width: fit-content;
 }
@@ -131,15 +136,15 @@ function handleToolEvent(tool: ToolConfig) {
   align-items: flex-end;
 
   .meta {
-    justify-content: end;
+    justify-content: flex-end;
   }
 
   .content {
-    background: #e6f7ff;
+    background: var(--color-msg-user);
   }
 
   .content-tools {
-    --uno: justify-end;
+    justify-content: flex-end;
   }
 }
 
@@ -147,12 +152,15 @@ function handleToolEvent(tool: ToolConfig) {
   align-self: flex-start;
 
   .content {
-    background: #f5f5f5;
+    background: var(--color-msg-assistant);
   }
 }
 
 .meta {
-  --uno: text-sm text-gray-5 mb-2;
+  gap: 4px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: var(--color-ink-faint);
 
   .name {
     &::first-letter {
