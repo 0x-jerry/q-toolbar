@@ -37,6 +37,12 @@ pub fn init_sql<T: Runtime>() -> TauriPlugin<T, Option<PluginConfig>> {
             sql: include_str!("sql/init_20260417.sql"),
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 6,
+            description: "use thinking level instead of reasoning",
+            sql: include_str!("sql/init_20260915.sql"),
+            kind: MigrationKind::Up,
+        },
     ];
 
     tauri_plugin_sql::Builder::default()

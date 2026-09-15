@@ -2,7 +2,6 @@
 import { useAsyncData } from '@0x-jerry/vue-kit'
 import { watchImmediate } from '@vueuse/core'
 import {
-  Checkbox,
   Form,
   type FormInstanceFunctions,
   FormItem,
@@ -10,12 +9,13 @@ import {
   Select,
   Textarea,
 } from 'tdesign-vue-next'
-import { useTemplateRef } from 'vue'
+import { computed, useTemplateRef } from 'vue'
 import { useI18n } from '../../composables'
 import { endpointConfigTable } from '../../database/endpointConfig'
 import type { IPromptConfigItem } from '../../database/promptConfig'
 import IconPicker from '../IconPicker.vue'
 import { fetchModelList } from '../../logic/modelListUtils'
+import { thinkingLevelOptions } from '../../logic/thinkingLevel'
 
 export interface PromptItemSettingProps {
   _?: unknown
@@ -27,6 +27,8 @@ const currentPromptConfig = defineModel<IPromptConfigItem>({ required: true })
 const { t } = useI18n()
 
 const formRef = useTemplateRef<FormInstanceFunctions>('formRef')
+
+const thinkingOptions = computed(() => thinkingLevelOptions(t))
 
 const endpointsApi = useAsyncData(endpointConfigTable.findAll, [])
 
@@ -51,14 +53,14 @@ async function updateModelList(force = false) {
   const endpointConfig = await endpointConfigTable.getById(
     currentPromptConfig.value.endpointId,
   )
-  const { baseUrl, apiKey, model, reasoning } = endpointConfig || {}
+  const { baseUrl, apiKey, model, thinkingLevel } = endpointConfig || {}
 
   if (!baseUrl) {
     return []
   }
 
   currentPromptConfig.value.model = model
-  currentPromptConfig.value.reasoning = reasoning
+  currentPromptConfig.value.thinkingLevel = thinkingLevel
 
   if (force) {
     return fetchModelList.forceUpdate({
@@ -116,8 +118,11 @@ defineExpose({
           </template>
         </Select>
       </FormItem>
-      <FormItem :label="t('common.reasoning')" name="reasoning">
-        <Checkbox v-model="currentPromptConfig.reasoning"></Checkbox>
+      <FormItem :label="t('common.thinkingLevel')" name="thinkingLevel">
+        <Select
+          v-model="currentPromptConfig.thinkingLevel"
+          :options="thinkingOptions"
+        ></Select>
       </FormItem>
       <FormItem :label="t('common.prompt')" name="prompt">
         <Textarea

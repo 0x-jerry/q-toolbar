@@ -1,3 +1,7 @@
+import {
+  normalizeThinkingLevel,
+  type ThinkingLevel,
+} from '../types'
 import { bindAllMethodsToSelf } from '../utils'
 import { type BaseModel, BaseModelManager } from './database'
 import {
@@ -14,7 +18,7 @@ export interface IPromptConfigModel extends BaseModel {
   endpointId?: number
   orderNo?: number
   model?: string
-  reasoning?: boolean
+  thinkingLevel?: ThinkingLevel
 
   endpointConfig?: IEndpointConfigModel
 }
@@ -31,19 +35,17 @@ class PromptConfigTable extends BaseModelManager<IPromptConfigModel> {
     'endpointId',
     'orderNo',
     'model',
-    'reasoning',
+    'thinkingLevel',
   ]
 
   constructor() {
     super({
       deserialize(key, value) {
-        switch (key) {
-          case 'reasoning':
-            return value === 'true'
-
-          default:
-            return value
+        if (key === 'thinkingLevel') {
+          return normalizeThinkingLevel(value)
         }
+
+        return value
       },
     })
   }

@@ -1,3 +1,7 @@
+import {
+  normalizeThinkingLevel,
+  type ThinkingLevel,
+} from '../types'
 import { bindAllMethodsToSelf } from '../utils'
 import { type BaseModel, BaseModelManager } from './database'
 import type { GetPureModelType } from './types'
@@ -8,7 +12,7 @@ export interface IEndpointConfigModel extends BaseModel {
   baseUrl?: string
   apiKey?: string
   model?: string
-  reasoning?: boolean
+  thinkingLevel?: ThinkingLevel
 }
 
 export type IEndpointConfigItem = GetPureModelType<IEndpointConfigModel>
@@ -21,19 +25,17 @@ class EndpointConfigTable extends BaseModelManager<IEndpointConfigModel> {
     'apiKey',
     'model',
     'isBuiltin',
-    'reasoning',
+    'thinkingLevel',
   ]
 
   constructor() {
     super({
       deserialize(key, value) {
-        switch (key) {
-          case 'reasoning':
-            return value === 'true'
-
-          default:
-            return value
+        if (key === 'thinkingLevel') {
+          return normalizeThinkingLevel(value)
         }
+
+        return value
       },
     })
   }

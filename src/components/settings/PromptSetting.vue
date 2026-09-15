@@ -22,6 +22,7 @@ const editData = ref<IPromptConfigItem>({
   name: t('common.untitled'),
   icon: '',
   prompt: '',
+  thinkingLevel: 'none',
 })
 
 function resetEditData() {
@@ -29,6 +30,7 @@ function resetEditData() {
     name: t('common.untitled'),
     icon: '',
     prompt: '',
+    thinkingLevel: 'none',
   }
 }
 

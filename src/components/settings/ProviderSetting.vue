@@ -33,6 +33,7 @@ const editData = ref<IEndpointConfigItem>({
   name: t('common.untitled'),
   baseUrl: '',
   model: '',
+  thinkingLevel: 'none',
 })
 
 function resetEditData() {
@@ -41,6 +42,7 @@ function resetEditData() {
     name: t('common.untitled'),
     baseUrl: '',
     model: '',
+    thinkingLevel: 'none',
   }
 }
 

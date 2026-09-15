@@ -3,17 +3,17 @@ import { useAsyncData } from '@0x-jerry/vue-kit'
 import { watchImmediate } from '@vueuse/core'
 import {
   Button,
-  Checkbox,
   Form,
   type FormInstanceFunctions,
   FormItem,
   Input,
   Select,
 } from 'tdesign-vue-next'
-import { useTemplateRef } from 'vue'
+import { computed, useTemplateRef } from 'vue'
 import { useI18n } from '../../composables'
 import type { IEndpointConfigItem } from '../../database/endpointConfig'
 import { fetchModelList } from '../../logic/modelListUtils'
+import { thinkingLevelOptions } from '../../logic/thinkingLevel'
 
 export interface EndpointItemSettingProps {
   _?: unknown
@@ -25,6 +25,8 @@ const currentProviderConfig = defineModel<IEndpointConfigItem>({ required: true 
 const { t } = useI18n()
 
 const formRef = useTemplateRef<FormInstanceFunctions>('formRef')
+
+const thinkingOptions = computed(() => thinkingLevelOptions(t))
 
 const modelListApi = useAsyncData(updateModelList, [])
 
@@ -91,8 +93,11 @@ defineExpose({
           </template>
         </Select>
       </FormItem>
-      <FormItem :label="t('common.reasoning')" name="reasoning">
-        <Checkbox v-model="currentProviderConfig.reasoning" ></Checkbox>
+      <FormItem :label="t('common.thinkingLevel')" name="thinkingLevel">
+        <Select
+          v-model="currentProviderConfig.thinkingLevel"
+          :options="thinkingOptions"
+        ></Select>
       </FormItem>
     </Form>
   </div>

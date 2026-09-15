@@ -21,6 +21,7 @@ import {
 } from '@ai-sdk/openai-compatible'
 import { fetchWithProxy } from '../logic/fetchWithProxy'
 import type { IPromptConfigItem } from '../database/promptConfig'
+import { DEFAULT_THINKING_LEVEL } from '../types'
 
 export interface ChatWithHistoryProps {
   historyId: number
@@ -145,10 +146,11 @@ async function _startChatStream(msgs: IChatHistoryMsgItem[]) {
     props.promptConfig?.model ||
     props.promptConfig?.endpointConfig?.model ||
     endpointConfig?.model
-  const enableReasoning =
-    props.promptConfig?.reasoning ??
-    props.promptConfig?.endpointConfig?.reasoning ??
-    endpointConfig?.reasoning
+  const thinkingLevel =
+    props.promptConfig?.thinkingLevel ??
+    props.promptConfig?.endpointConfig?.thinkingLevel ??
+    endpointConfig?.thinkingLevel ??
+    DEFAULT_THINKING_LEVEL
 
   if (!baseUrl || !apiKey || !model) {
     throw new Error(`Endpoint config is missing`)
@@ -171,8 +173,8 @@ async function _startChatStream(msgs: IChatHistoryMsgItem[]) {
     model: openaiProvider(model),
     providerOptions: {
       [providerName]: {
-        enable_thinking: enableReasoning,
-        reasoningEffort: enableReasoning ? 'medium' : 'none',
+        enable_thinking: thinkingLevel !== 'none',
+        reasoningEffort: thinkingLevel,
       },
     },
     messages: msgs.map((msg) => {
